@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { DebounceInput } from 'react-debounce-input'
 
 function App() {
 
@@ -9,7 +10,6 @@ function App() {
 
   const getInputResult = (event) => {
     setInput(event.target.value)
-    dataFetcher()
   }
 
   const dataFetcher = async () => {
@@ -19,19 +19,14 @@ function App() {
 
   useEffect(() => {
     dataFetcher()
-  },[])
+  },[collectInput])
 
   return <div className="App">
     <h1>Find a Book</h1>
-    <input type="text" onChange={getInputResult} />
+    <DebounceInput minLength={2} debounceTimeout={500} type="text" onChange={getInputResult} />
     <ul>
-      {
-        searchResult.map((item) => { 
-          if (collectInput !== "") {
-        return (
-          <li>{item.volumeInfo.title}</li>
-        )}
-      })}
+    {searchResult.length > 0 ? searchResult.map((item) => (
+    <li key={item.id}>{item.volumeInfo.title}</li> )) : null }
     </ul>
   </div>;
 }
